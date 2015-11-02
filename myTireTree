@@ -1,0 +1,66 @@
+#include <algorithm>
+#include <iostream>
+#include <string.h>
+using namespace std;
+
+const int sonnum=26,base='a';
+struct Trie
+{
+	int num;						   //多少单词途径该节点 
+	bool terminal;					   //是否无后续节点 
+	int count;                         //单词出现次数 
+	struct Trie *son[sonnum];
+};
+Trie *NewTrie()
+{
+	Trie *temp=new Trie;
+	temp->num=1;
+	temp->terminal=false;
+	temp->count=0;
+	for(int i=0;i<sonnum;++i)
+		temp->son[i]=NULL;
+	return temp;
+}
+void Insert(Trie *root,char *str,int len)
+{
+	Trie *temp=root;
+	for(int i=0;i<len;++i)
+	{
+		if(temp->son[str[i]-base]==NULL)
+			temp->son[str[i]-base]=NewTrie();
+		else{
+			temp->son[str[i]-base]->num++;
+			temp->terminal=false;
+		}
+		temp=temp->son[str[i]-base];
+	}
+	temp->terminal=true;
+}
+void Delete(Trie *root)
+{
+	if(root!=NULL)
+	{
+		for(int i=0;i<sonnum;++i)
+			if(root->son[i]!=NULL)
+				Delete(root->son[i]);
+		delete root;
+		root=NULL;
+	}
+}
+Trie* Find(Trie *root,char *str,int len)
+{
+	Trie *temp=root;
+	for(int i=0;i<len;++i)
+		if(temp->son[str[i]-base]!=NULL)
+			temp=temp->son[str[i]-base];
+		else
+			return NULL;
+	return temp;
+}
+int main(void)
+{
+	struct Trie* Dic=NewTrie();
+	Insert(Dic,"what",strlen("what"));
+	
+	
+}
